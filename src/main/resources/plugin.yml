@@ -1,0 +1,7 @@
+name: Bot
+version: '${project.version}'
+main: bot.bot.Plugin
+api-version: 1.19
+
+commands:
+  registerDiscord:

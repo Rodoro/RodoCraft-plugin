@@ -42,7 +42,8 @@ public class Bot {
             .build();
 
 
-    Guild guild = jda.getGuildById("955504354792730624");
+    public Guild guild = jda.getGuildById("955504354792730624");
+    public int numberChat = 0;
 
     public void start(){
         try {

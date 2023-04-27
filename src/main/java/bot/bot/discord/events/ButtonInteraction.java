@@ -9,9 +9,14 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.EnumSet;
 
 public class ButtonInteraction extends ListenerAdapter {
@@ -48,8 +53,8 @@ public class ButtonInteraction extends ListenerAdapter {
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("Заявка");
-            embedBuilder.setDescription("Вы подали заявку. Ждите ответа.");
-            embedBuilder.setColor(65535);
+            embedBuilder.setDescription("Вы подали заявку. Ждите ответа. Чтобы отменить ее нажмите на кнопку **Забрать** ");
+            embedBuilder.setColor(Color.decode("#9966CC"));
 
             Button primaryButton = Button.secondary("take", "Забрать");
             Button secondaryButton = Button.danger("reject", "Рассмотрено");
@@ -60,6 +65,41 @@ public class ButtonInteraction extends ListenerAdapter {
                     .addPermissionOverride(event.getGuild().getRoleById("1004383854032846930"), EnumSet.of(Permission.VIEW_CHANNEL), null)
                     .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
                     .complete().sendMessageEmbeds(embedBuilder.build()).setActionRow(primaryButton, secondaryButton).queue();
+        }else if(event.getButton().getId().equals("take")){
+            event.getChannel().delete().queue();
+        }else if(event.getButton().getId().equals("reject")){
+            if(event.getMember().getRoles().contains(event.getGuild().getRoleById("1004383854032846930"))){
+                TextInput profile = TextInput.create("profile", "Участник", TextInputStyle.SHORT)
+                        .setPlaceholder("ID кто подал заявку")
+                        .setMinLength(5)
+                        .setMaxLength(20)
+                        .build();
+
+                TextInput reason = TextInput.create("reason", "Причина", TextInputStyle.PARAGRAPH)
+                        .setPlaceholder("Причина подачи заявки")
+                        .setMinLength(30)
+                        .setMaxLength(1000)
+                        .build();
+
+                TextInput decision = TextInput.create("decision", "Решение", TextInputStyle.SHORT)
+                        .setPlaceholder("Решено/отложено")
+                        .setMinLength(5)
+                        .setMaxLength(20)
+                        .build();
+
+                TextInput punishment = TextInput.create("punishment", "Наказание", TextInputStyle.PARAGRAPH)
+                        .setPlaceholder("Установленое наказание")
+                        .setMinLength(30)
+                        .setMaxLength(1000)
+                        .build();
+
+                Modal modal = Modal.create("court", "Принятое решение").addActionRows(ActionRow.of(profile), ActionRow.of(reason), ActionRow.of(decision), ActionRow.of(punishment))
+                        .build();
+
+                event.replyModal(modal).queue();
+            }else{
+                event.reply("У вас нету роли судьи.").setEphemeral(true).queue();
+            }
         }
     }
 }

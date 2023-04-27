@@ -4,6 +4,7 @@ import bot.bot.Secret;
 import bot.bot.discord.commands.Verification;
 import bot.bot.discord.events.ButtonInteraction;
 import bot.bot.discord.events.MessageDuplicator;
+import bot.bot.discord.events.ModalInteraction;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -37,7 +38,8 @@ public class Bot {
             .addEventListeners(
                     new ButtonInteraction(),
                     new Verification(),
-                    new MessageDuplicator())
+                    new MessageDuplicator(),
+                    new ModalInteraction())
             .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
             .build();
 

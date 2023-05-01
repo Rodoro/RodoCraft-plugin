@@ -1,6 +1,7 @@
 package bot.bot.discord;
 
 import bot.bot.Secret;
+import bot.bot.discord.commands.InfoServer;
 import bot.bot.discord.commands.Verification;
 import bot.bot.discord.events.ButtonInteraction;
 import bot.bot.discord.events.MessageDuplicator;
@@ -10,17 +11,19 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.bukkit.Bukkit;
 
 import java.awt.*;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Bot {
 
@@ -35,9 +38,12 @@ public class Bot {
     }
     private final JDA jda = JDABuilder.createDefault(Secret.token)
             .setActivity(Activity.playing("Minecraft"))
+            .setChunkingFilter(ChunkingFilter.ALL)
+            .setMemberCachePolicy(MemberCachePolicy.ALL)
             .addEventListeners(
                     new ButtonInteraction(),
                     new Verification(),
+                    new InfoServer(),
                     new MessageDuplicator(),
                     new ModalInteraction())
             .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
@@ -53,7 +59,15 @@ public class Bot {
 
             guild = jda.getGuildById("955504354792730624");
 
-            guild.upsertCommand("verification", "Взаимодействие с верификацией").queue();
+            guild.updateCommands().addCommands(
+                    Commands.slash("verification", "Взаимодействие с верификацией"),
+                    Commands.slash("infoserver", "Информация о майнкрафт сервере")
+                            .addOptions(
+                                    new OptionData(OptionType.STRING, "type", "Выберити сервер")
+                                            .addChoice("Vanilla", "vanilla")
+                                            .addChoice("Discord", "discord")
+                            )
+            ).queue();
         }
         catch (Exception e) {
             e.printStackTrace();

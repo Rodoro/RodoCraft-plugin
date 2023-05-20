@@ -1,6 +1,7 @@
 package bot.bot.discord;
 
 import bot.bot.Secret;
+import bot.bot.discord.commands.Application;
 import bot.bot.discord.commands.InfoServer;
 import bot.bot.discord.commands.Verification;
 import bot.bot.discord.events.ButtonInteraction;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -44,6 +46,7 @@ public class Bot {
                     new ButtonInteraction(),
                     new Verification(),
                     new InfoServer(),
+                    new Application(),
                     new MessageDuplicator(),
                     new ModalInteraction())
             .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
@@ -63,9 +66,18 @@ public class Bot {
                     Commands.slash("verification", "Взаимодействие с верификацией"),
                     Commands.slash("infoserver", "Информация о майнкрафт сервере")
                             .addOptions(
-                                    new OptionData(OptionType.STRING, "type", "Выберити сервер")
+                                    new OptionData(OptionType.STRING, "type", "Выберити сервер", true)
                                             .addChoice("Vanilla", "vanilla")
                                             .addChoice("Discord", "discord")
+                            ),
+                    Commands.slash("application", "Подача заявок")
+                            .addOptions(
+                                    new OptionData(OptionType.STRING, "type", "Выбор заявки", true)
+                                            .addChoice("Создание гильдии", "guild")
+                                            .addChoice("Заявка на судью", "court")
+                                            .addChoice("Заявка на контент мейкера", "contentmaker")
+                                            .addChoice("Заявка на модератора", "moderator")
+                                            .addChoice("Заявка на провидение ивента", "event")
                             )
             ).queue();
         }
@@ -168,5 +180,14 @@ public class Bot {
 
     public Category getCategory(String id){
         return jda.getCategoryById(id);
+    }
+
+    public void sendEmbedIsUserById(String id, EmbedBuilder embedBuilder) {
+        User user = jda.getUserById(id);
+        if (user != null) {
+            user.openPrivateChannel().queue(channel -> {
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            });
+        }
     }
 }

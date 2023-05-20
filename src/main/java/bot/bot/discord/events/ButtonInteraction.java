@@ -100,6 +100,145 @@ public class ButtonInteraction extends ListenerAdapter {
             }else{
                 event.reply("У вас нету роли судьи.").setEphemeral(true).queue();
             }
+        }else if(event.getButton().getId().equals("rejectionGuildA")){
+            TextInput profile = TextInput.create("reason", "Причина отказа", TextInputStyle.PARAGRAPH)
+                    .setPlaceholder("Причина отказа заявка на создания гильдии")
+                    .setMinLength(10)
+                    .setMaxLength(1000)
+                    .build();
+
+
+            Modal modal = Modal.create("rejectionGuildA", "Отказ").addActionRows(ActionRow.of(profile))
+                    .build();
+
+            event.replyModal(modal).queue();
+        }else if(event.getButton().getId().equals("acceptGuildA")){
+            MessageEmbed messageEmbed = event.getMessage().getEmbeds().get(0);
+
+
+            EmbedBuilder embedBuilder1 = new EmbedBuilder()
+                    .setTitle("✅ | Принятие заявки на создание гильдии")
+                    .setColor(Color.decode("#9966CC"))
+                    .addField("Кто подал", String.valueOf(messageEmbed.getFields().get(0).getValue()), false)
+                    .addField("ID кто подал", String.valueOf(messageEmbed.getFields().get(1).getValue()), false)
+                    .addField("Название", String.valueOf(messageEmbed.getFields().get(2).getValue()), false)
+                    .addField("Префикс", String.valueOf(messageEmbed.getFields().get(3).getValue()), false)
+                    .addField("Описание", String.valueOf(messageEmbed.getFields().get(4).getValue()), false)
+                    .addField("Приватность", String.valueOf(messageEmbed.getFields().get(5).getValue()), false)
+                    .addField("Иконка", String.valueOf(messageEmbed.getFields().get(6).getValue()), false);
+
+            event.getMessage().delete().queue();
+            event.replyEmbeds(embedBuilder1.build()).queue();
+        }else if(event.getButton().getId().equals("rejectionСourtA")){
+            TextInput profile = TextInput.create("reason", "Причина отказа", TextInputStyle.PARAGRAPH)
+                    .setPlaceholder("Причина отказа заявка на судью")
+                    .setMinLength(10)
+                    .setMaxLength(1000)
+                    .build();
+
+
+            Modal modal = Modal.create("rejectionСourtA", "Отказ").addActionRows(ActionRow.of(profile))
+                    .build();
+
+            event.replyModal(modal).queue();
+        }else if(event.getButton().getId().equals("acceptСourtA")){
+            MessageEmbed messageEmbed = event.getMessage().getEmbeds().get(0);
+
+            event.getGuild().addRoleToMember(event.getGuild().getMemberById(String.valueOf(messageEmbed.getFields().get(1).getValue())), event.getGuild().getRoleById("1004383854032846930")).queue();
+
+            EmbedBuilder embedBuilder1 = new EmbedBuilder()
+                    .setTitle("✅ | Принятие заявки на судью")
+                    .setColor(Color.decode("#9966CC"))
+                    .addField("Кто подал", String.valueOf(messageEmbed.getFields().get(0).getValue()), false)
+                    .addField("ID кто подал", String.valueOf(messageEmbed.getFields().get(1).getValue()), false)
+                    .addField("Почему", String.valueOf(messageEmbed.getFields().get(2).getValue()), false)
+                    .addField("Опыт", String.valueOf(messageEmbed.getFields().get(3).getValue()), false);
+
+            event.getMessage().delete().queue();
+            event.replyEmbeds(embedBuilder1.build()).queue();
+        }else if(event.getButton().getId().equals("rejectionСontentmakerA")){
+            TextInput profile = TextInput.create("reason", "Причина отказа", TextInputStyle.PARAGRAPH)
+                    .setPlaceholder("Причина отказа заявка на контент-мейкера")
+                    .setMinLength(10)
+                    .setMaxLength(1000)
+                    .build();
+
+
+            Modal modal = Modal.create("rejectionСontentmakerA", "Отказ").addActionRows(ActionRow.of(profile))
+                    .build();
+
+            event.replyModal(modal).queue();
+        }else if(event.getButton().getId().equals("acceptСontentmakerA")){
+            MessageEmbed messageEmbed = event.getMessage().getEmbeds().get(0);
+
+            event.getGuild().addRoleToMember(event.getGuild().getMemberById(String.valueOf(messageEmbed.getFields().get(1).getValue())), event.getGuild().getRoleById("1007629610298642493")).queue();
+
+            EmbedBuilder embedBuilder1 = new EmbedBuilder()
+                    .setTitle("✅ | Принятие заявки на контент-мейкера")
+                    .setColor(Color.decode("#9966CC"))
+                    .addField("Кто подал", String.valueOf(messageEmbed.getFields().get(0).getValue()), false)
+                    .addField("ID кто подал", String.valueOf(messageEmbed.getFields().get(1).getValue()), false)
+                    .addField("Ссылка", String.valueOf(messageEmbed.getFields().get(2).getValue()), false)
+                    .addField("Частота", String.valueOf(messageEmbed.getFields().get(3).getValue()), false)
+                    .addField("Доп. связь", String.valueOf(messageEmbed.getFields().get(4).getValue()), false);
+
+            event.getMessage().delete().queue();
+            event.replyEmbeds(embedBuilder1.build()).queue();
+        }else if(event.getButton().getId().equals("rejectionModeratorA")){
+            TextInput profile = TextInput.create("reason", "Причина отказа", TextInputStyle.PARAGRAPH)
+                    .setPlaceholder("Причина отказа заявка на модератора")
+                    .setMinLength(10)
+                    .setMaxLength(1000)
+                    .build();
+
+
+            Modal modal = Modal.create("rejectionModeratorA", "Отказ").addActionRows(ActionRow.of(profile))
+                    .build();
+
+            event.replyModal(modal).queue();
+        }else if(event.getButton().getId().equals("acceptModeratorA")){
+            MessageEmbed messageEmbed = event.getMessage().getEmbeds().get(0);
+
+            event.getGuild().addRoleToMember(event.getGuild().getMemberById(String.valueOf(messageEmbed.getFields().get(1).getValue())), event.getGuild().getRoleById("1007686462944317581")).queue();
+
+            EmbedBuilder embedBuilder1 = new EmbedBuilder()
+                    .setTitle("✅ | Принятие заявки на модератора")
+                    .setColor(Color.decode("#9966CC"))
+                    .addField("Кто подал", String.valueOf(messageEmbed.getFields().get(0).getValue()), false)
+                    .addField("ID кто подал", String.valueOf(messageEmbed.getFields().get(1).getValue()), false)
+                    .addField("Почему", String.valueOf(messageEmbed.getFields().get(2).getValue()), false)
+                    .addField("Опыт", String.valueOf(messageEmbed.getFields().get(3).getValue()), false)
+                    .addField("Доп. связь", String.valueOf(messageEmbed.getFields().get(4).getValue()), false);
+
+            event.getMessage().delete().queue();
+            event.replyEmbeds(embedBuilder1.build()).queue();
+        }else if(event.getButton().getId().equals("rejectionEventA")){
+            TextInput profile = TextInput.create("reason", "Причина отказа", TextInputStyle.PARAGRAPH)
+                    .setPlaceholder("Причина отказа заявка на создание ивента")
+                    .setMinLength(10)
+                    .setMaxLength(1000)
+                    .build();
+
+
+            Modal modal = Modal.create("rejectionEventA", "Отказ").addActionRows(ActionRow.of(profile))
+                    .build();
+
+            event.replyModal(modal).queue();
+        }else if(event.getButton().getId().equals("acceptEventA")){
+            MessageEmbed messageEmbed = event.getMessage().getEmbeds().get(0);
+
+            EmbedBuilder embedBuilder1 = new EmbedBuilder()
+                    .setTitle("✅ | Принятие заявки на создание ивента")
+                    .setColor(Color.decode("#9966CC"))
+                    .addField("Кто подал", String.valueOf(messageEmbed.getFields().get(0).getValue()), false)
+                    .addField("ID кто подал", String.valueOf(messageEmbed.getFields().get(1).getValue()), false)
+                    .addField("Дата и время", String.valueOf(messageEmbed.getFields().get(2).getValue()), false)
+                    .addField("Место", String.valueOf(messageEmbed.getFields().get(3).getValue()), false)
+                    .addField("Описание", String.valueOf(messageEmbed.getFields().get(4).getValue()), false)
+                    .addField("Призы", String.valueOf(messageEmbed.getFields().get(5).getValue()), false);
+
+            event.getMessage().delete().queue();
+            event.replyEmbeds(embedBuilder1.build()).queue();
         }
     }
 }

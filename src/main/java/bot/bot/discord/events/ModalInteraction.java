@@ -1,5 +1,6 @@
 package bot.bot.discord.events;
 
+import bot.bot.database.GuildDB;
 import bot.bot.discord.Bot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -37,23 +38,29 @@ public class ModalInteraction extends ListenerAdapter {
             String available = event.getValue("available").getAsString();
             String img = event.getValue("img").getAsString();
 
-            EmbedBuilder embedBuilder = new EmbedBuilder()
-                    .setTitle("🔄 | Заявка на создание гильдии")
-                    .setColor(Color.decode("#9966CC"))
-                    .addField("Кто подал", event.getMember().getUser().getName(), false)
-                    .addField("ID кто подал", event.getMember().getUser().getId(), false)
-                    .addField("Название", name, false)
-                    .addField("Префикс", prefix, false)
-                    .addField("Описание", motto, false)
-                    .addField("Приватность", available, false)
-                    .addField("Иконка", img, false);
+            if(GuildDB.getInstance().guildExistsName(name)){
+                event.reply("Название гильдии повторяется").setEphemeral(true).queue();
+            }else if (GuildDB.getInstance().guildExistsPrefix(prefix)){
+                event.reply("Префикс гильдии повторяется").setEphemeral(true).queue();
+            } else {
+                EmbedBuilder embedBuilder = new EmbedBuilder()
+                        .setTitle("🔄 | Заявка на создание гильдии")
+                        .setColor(Color.decode("#9966CC"))
+                        .addField("Кто подал", event.getMember().getUser().getName(), false)
+                        .addField("ID кто подал", event.getMember().getUser().getId(), false)
+                        .addField("Название", name, false)
+                        .addField("Префикс", prefix, false)
+                        .addField("Описание", motto, false)
+                        .addField("Приватность", available, false)
+                        .addField("Иконка", img, false);
 
-            Button acceptGuildAButton = Button.primary("acceptGuildA", "✔ Принять");
-            Button rejectionGuildAButton = Button.secondary("rejectionGuildA", "❌ Отказ");
+                Button acceptGuildAButton = Button.primary("acceptGuildA", "✔ Принять");
+                Button rejectionGuildAButton = Button.secondary("rejectionGuildA", "❌ Отказ");
 
-            TextChannel channel = event.getGuild().getTextChannelById("1007324147111706734");
-            channel.sendMessageEmbeds(embedBuilder.build()).setActionRow(acceptGuildAButton, rejectionGuildAButton).queue();
-            event.reply("Заявка на создание гильди была отправлена").setEphemeral(true).queue();
+                TextChannel channel = event.getGuild().getTextChannelById("1007324147111706734");
+                channel.sendMessageEmbeds(embedBuilder.build()).setActionRow(acceptGuildAButton, rejectionGuildAButton).queue();
+                event.reply("Заявка на создание гильди была отправлена").setEphemeral(true).queue();
+            }
         } else if(event.getModalId().equals("rejectionGuildA")){
             String reason = event.getValue("reason").getAsString();
             MessageEmbed messageEmbed = event.getMessage().getEmbeds().get(0);

@@ -1,13 +1,12 @@
 package bot.bot;
 
 import bot.bot.commands.RegisterDiscord;
+import bot.bot.database.GuildDB;
 import bot.bot.discord.Bot;
 import bot.bot.events.ChatEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 public final class Plugin extends JavaPlugin {
 
@@ -38,6 +37,7 @@ public final class Plugin extends JavaPlugin {
                 tab.update(player);
             }
         }, 0L, 20L);
+        GuildDB.getInstance().GuildDAO();
     }
 
     @Override

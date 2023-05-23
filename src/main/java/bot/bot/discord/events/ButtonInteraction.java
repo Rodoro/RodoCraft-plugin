@@ -1,11 +1,15 @@
 package bot.bot.discord.events;
 
 import bot.bot.database.Database;
+import bot.bot.database.GuildDB;
 import bot.bot.discord.Bot;
+import bot.bot.model.Guild;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,6 +21,7 @@ import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class ButtonInteraction extends ListenerAdapter {
@@ -115,13 +120,77 @@ public class ButtonInteraction extends ListenerAdapter {
         }else if(event.getButton().getId().equals("acceptGuildA")){
             MessageEmbed messageEmbed = event.getMessage().getEmbeds().get(0);
 
+            String name = String.valueOf(messageEmbed.getFields().get(2).getValue());
+            boolean isPrivate = false;
+            if(String.valueOf(messageEmbed.getFields().get(5).getValue())=="Да"){
+                isPrivate = true;
+            }
+            Role memberRole = event.getGuild().createRole().setName("Участник " + name).setColor(Color.BLUE).complete();
+            Role sorocRole = event.getGuild().createRole().setName("Соруковадитель " + name).setColor(Color.BLUE).complete();
+            Role starRole = event.getGuild().createRole().setName("Старейшина " + name).setColor(Color.BLUE).complete();
+            Role ownerRole = event.getGuild().createRole().setName("Глава " + name).setColor(Color.BLUE).complete();
+
+            event.getGuild().addRoleToMember(event.getGuild().getMemberById(String.valueOf(messageEmbed.getFields().get(1).getValue())), ownerRole).queue();
+
+            Channel tChannel = event.getGuild().createTextChannel("⚙┃" + name)
+                    .setParent(Bot.getInstance().getCategory("1011735086225440818"))
+                    .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                    .addPermissionOverride(event.getGuild().getRoleById(sorocRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(starRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(ownerRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .complete();
+
+            Channel vChannel = event.getGuild().createTextChannel("👥┃"+ name)
+                    .setParent(Bot.getInstance().getCategory("1011735086225440818"))
+                    .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                    .addPermissionOverride(event.getGuild().getRoleById(memberRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(sorocRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(starRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(ownerRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .complete();
+
+            Channel teChannel = event.getGuild().createVoiceChannel("🔊┃"+ name)
+                    .setParent(Bot.getInstance().getCategory("1011735086225440818"))
+                    .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                    .addPermissionOverride(event.getGuild().getRoleById(memberRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(sorocRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(starRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .addPermissionOverride(event.getGuild().getRoleById(ownerRole.getId()), EnumSet.of(Permission.VIEW_CHANNEL), null)
+                    .complete();
+
+            ArrayList<String> listMemberId = new ArrayList<String>();
+            listMemberId.add(String.valueOf(messageEmbed.getFields().get(1).getValue()));
+
+            GuildDB.getInstance().addGuild(new Guild(
+                    GuildDB.getInstance().getMaxID()+1,
+                    name,
+                    String.valueOf(messageEmbed.getFields().get(3).getValue()),
+                    String.valueOf(messageEmbed.getFields().get(4).getValue()),
+                    isPrivate,
+                    String.valueOf(messageEmbed.getFields().get(6).getValue()),
+                    String.valueOf(messageEmbed.getFields().get(1).getValue()),
+                    listMemberId,
+                    String.valueOf(System.currentTimeMillis()),
+                    1,
+                    0,
+                    memberRole.getId(),
+                    sorocRole.getId(),
+                    starRole.getId(),
+                    ownerRole.getId(),
+                    tChannel.getId(),
+                    vChannel.getId(),
+                    teChannel.getId(),
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    new ArrayList<>()
+            ));
 
             EmbedBuilder embedBuilder1 = new EmbedBuilder()
                     .setTitle("✅ | Принятие заявки на создание гильдии")
                     .setColor(Color.decode("#9966CC"))
                     .addField("Кто подал", String.valueOf(messageEmbed.getFields().get(0).getValue()), false)
                     .addField("ID кто подал", String.valueOf(messageEmbed.getFields().get(1).getValue()), false)
-                    .addField("Название", String.valueOf(messageEmbed.getFields().get(2).getValue()), false)
+                    .addField("Название", name, false)
                     .addField("Префикс", String.valueOf(messageEmbed.getFields().get(3).getValue()), false)
                     .addField("Описание", String.valueOf(messageEmbed.getFields().get(4).getValue()), false)
                     .addField("Приватность", String.valueOf(messageEmbed.getFields().get(5).getValue()), false)

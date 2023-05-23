@@ -14,6 +14,9 @@ public class Application extends ListenerAdapter {
         if (event.getName().equals("application")){
             String typeOption = event.getOption("type").getAsString();
             if (typeOption.equalsIgnoreCase("guild")){
+
+                //TODO проверка на наличие состояние в гильдии
+
                 TextInput name = TextInput.create("name", "Название", TextInputStyle.SHORT)
                         .setPlaceholder("Название вашей гильдии")
                         .setMinLength(5)

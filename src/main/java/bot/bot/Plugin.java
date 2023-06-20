@@ -2,13 +2,14 @@ package bot.bot;
 
 import bot.bot.commands.RegisterDiscord;
 import bot.bot.database.GuildDB;
+import bot.bot.database.VipStatusDB;
 import bot.bot.discord.Bot;
 import bot.bot.events.ChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Plugin extends JavaPlugin {
+public final class   Plugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
@@ -38,6 +39,7 @@ public final class Plugin extends JavaPlugin {
             }
         }, 0L, 20L);
         GuildDB.getInstance().GuildDAO();
+        VipStatusDB.getInstance().VipStatusDAO();
     }
 
     @Override

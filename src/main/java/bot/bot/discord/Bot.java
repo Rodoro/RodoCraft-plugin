@@ -1,20 +1,20 @@
 package bot.bot.discord;
 
 import bot.bot.Secret;
-import bot.bot.discord.commands.Application;
-import bot.bot.discord.commands.InfoServer;
-import bot.bot.discord.commands.Verification;
+import bot.bot.discord.commands.*;
 import bot.bot.discord.events.ButtonInteraction;
 import bot.bot.discord.events.MessageDuplicator;
 import bot.bot.discord.events.ModalInteraction;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -48,7 +48,9 @@ public class Bot {
                     new InfoServer(),
                     new Application(),
                     new MessageDuplicator(),
-                    new ModalInteraction())
+                    new ModalInteraction(),
+                    new UpLvlGuild(),
+                    new VipStatusUpdate())
             .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
             .build();
 
@@ -78,7 +80,21 @@ public class Bot {
                                             .addChoice("Заявка на контент мейкера", "contentmaker")
                                             .addChoice("Заявка на модератора", "moderator")
                                             .addChoice("Заявка на провидение ивента", "event")
+                            ),
+                    Commands.slash("vipstatus", "Изменение vip статуса")
+                            .addOptions(
+                                    new OptionData(OptionType.USER, "user", "Выбор пользователя", true)
                             )
+                            .addOptions(
+                                    new OptionData(OptionType.INTEGER, "exp","Опыта сколько", true)
+                            )
+                            .addOptions(
+                                    new OptionData(OptionType.INTEGER, "money", "Деньги", true)
+                            )
+                            .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+//                    Commands.slash("upLvlGuild", "Повысить уровень гильдии")
+//                            .addOption(OptionType.STRING, "guild", "Название гильдии", true)
+                            //TODO дать права только для админов
             ).queue();
         }
         catch (Exception e) {
